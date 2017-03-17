@@ -1,0 +1,110 @@
+{extend name="public/base"/}
+{block name="style"}
+<link href="__PUBLIC__/plugs/easyzoom/default.css" rel="stylesheet" type="text/css" media="all">
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="__PUBLIC__/plugs/imgPreview/imgPreview.min.js"></script>
+
+
+{/block}
+{block name="body"}
+
+
+<div class="main-box clearfix">
+	<header class="main-box-header clearfix">
+		<div class="pull-left">
+			<h2>{$meta_title}</h2>
+		</div>
+		<div class="pull-right">
+			<div class="pull-right">
+				<a class="btn btn-primary" href="{:url('admin/ebay/add')}">新 增</a>
+
+			</div>
+		</div>
+	</header>
+	<div class="main-box-body clearfix">
+		<div class="row">
+			
+		</div>
+		<div class="table-responsive clearfix">
+
+			<div class="table-responsive clearfix">
+				<table class="table table-hover">
+					<thead>
+					<tr>
+						<th width="30"><input class="checkbox check-all" type="checkbox"></th>
+						<th width="120">预览</th>
+						<th width="30">ID</th>
+						<th width="60">名称</th>
+						<th width="">url</th>
+
+						
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody>
+
+					{volist name="data" id="item"}
+
+						<tr>
+							<td><input class="ids row-selected" name="id[]" value="{$item['id']}" type="checkbox"></td>
+							<td><a href="__ROOT__{$item['url']}" class="zoom"><img src="__ROOT__{$item['url']}" width="50" height="50"></a></td>
+							<td>{$item['id']}</td>
+							<td>
+								{$item['name']}
+							</td>
+							<td>{$item['url']}</td>
+							
+
+							<td>
+
+								<a title="删除" href="#" class="del ajax-get" value="{$item['id']}" names={$item['name']}>删除</a>
+
+							</td>
+						</tr>
+					{/volist}
+
+
+					</tbody>
+				</table>
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+	(function($){  
+	$('a.zoom').imgPreview({
+	imgCSS: { width: 800,}
+	});
+	})(jQuery);
+</script>
+<script>
+	(function(){
+
+		//$('a.zoom').easyZoom();
+		$('table .del').on("click",function(){
+			$that = $(this);
+			var name = $(this).attr("names"),id  = $(this).attr("value");
+			
+			var statu = confirm("确定要删除图片"+name+"吗？");
+			  if(!statu){
+			   	return false;
+			  }
+			  $.ajax({
+			  	url:"__ROOT__/admin/ebay/remove",
+			  	data:{name:name,id:id},
+			  	type: "post",
+			  	success:function(r){
+			  		if(r){
+			  			$that.parents("tr:first").remove();
+			  		}
+			  	}
+			  });
+		});
+	})(jQuery);
+
+</script>
+{/block}
+
